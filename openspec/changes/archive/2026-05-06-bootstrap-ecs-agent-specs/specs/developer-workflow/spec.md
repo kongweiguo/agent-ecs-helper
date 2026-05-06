@@ -18,6 +18,10 @@ The repository SHALL keep reproducible source files and specifications while exc
 
 The repository SHALL document local development as a paired LangGraph backend and Agent Chat UI frontend workflow.
 
+The documented backend command SHALL use `uv run langgraph dev` and explain that it may open remote LangSmith Studio.
+
+The README SHALL explain that LangSmith Studio tracing notices are not local ECS agent errors.
+
 ### Requirement: Local logging and debug workflow
 
 The repository SHALL document how developers inspect user messages, runs, tool calls, and local server logs during development.

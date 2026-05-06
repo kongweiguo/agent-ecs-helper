@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
 from typing import Any
 
@@ -15,8 +14,7 @@ DEFAULT_CONFIG = Path("configs/volcengine-ecs-agent.yaml")
 
 
 async def make_graph() -> Any:
-    config_path = os.getenv("ECS_AGENT_CONFIG", str(DEFAULT_CONFIG))
-    config = load_config(config_path)
+    config = load_config(DEFAULT_CONFIG)
     mcp_client = MultiServerMCPClient(config.mcp_client_config())
     tools = await mcp_client.get_tools()
     model = build_model(config)

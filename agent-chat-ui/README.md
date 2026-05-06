@@ -11,7 +11,6 @@ repository root.
 Terminal 1, start the Python LangGraph backend from the repository root:
 
 ```bash
-export ECS_AGENT_CONFIG="configs/volcengine-ecs-agent.yaml"
 uv run langgraph dev
 ```
 

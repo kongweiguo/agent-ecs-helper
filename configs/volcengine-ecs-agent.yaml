@@ -1,0 +1,44 @@
+# Default ECS agent runtime config. This file contains no real secrets.
+# Keep real AK/SK and model API keys in environment variables.
+
+model:
+  provider: volcengine-doubao
+  base_url: "https://ark.cn-beijing.volces.com/api/v3"
+  # Replace with your enabled Ark/Doubao model or endpoint id if needed.
+  name: "doubao-seed-2-0-lite-260215"
+  api_key_env: "ARK_API_KEY"
+  temperature: 0
+  timeout_seconds: 120
+
+mcp_servers:
+  ecs:
+    transport: "stdio"
+    command: "uvx"
+    args:
+      - "--python"
+      - "3.14"
+      - "--overrides"
+      - "configs/uvx-overrides.txt"
+      - "--from"
+      - "git+https://github.com/volcengine/mcp-server#subdirectory=server/mcp_server_ecs"
+      - "mcp-server-ecs"
+    env:
+      VOLCENGINE_ACCESS_KEY: "${VOLCENGINE_ACCESS_KEY}"
+      VOLCENGINE_SECRET_KEY: "${VOLCENGINE_SECRET_KEY}"
+      VOLCENGINE_REGION: "${VOLCENGINE_REGION}"
+      # Usually open.volcengineapi.com; override if your account/region requires another endpoint.
+      VOLCENGINE_ENDPOINT: "${VOLCENGINE_ENDPOINT:-open.volcengineapi.com}"
+      MCP_SERVER_PORT: "${MCP_SERVER_PORT:-8000}"
+      UV_CACHE_DIR: ".uv-cache"
+
+agent:
+  recursion_limit: 20
+  system_prompt: |
+    你是火山引擎 ECS 运维助手。你只能通过已接入的 ECS MCP 工具查询或管理 ECS 资源。
+
+    工作原则：
+    1. 查询类任务可以直接执行，并在回答中说明地域、筛选条件和关键结果。
+    2. 对启动实例、续费实例、更新系统事件状态等会改变云资源状态或产生费用的操作，必须先向用户复述操作对象、地域和影响，并要求用户明确确认后再调用工具。
+    3. 如果用户没有给出地域、实例 ID、镜像 ID、续费周期等必要参数，先询问缺失参数。
+    4. 不要输出 AK/SK、API Key 或任何密钥值。
+    5. MCP 工具返回大量数据时，优先总结重点，并保留关键 ID 便于用户继续操作。

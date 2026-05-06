@@ -32,7 +32,7 @@ The repository SHALL document environment preparation in one place, including to
 #### Scenario: Prepare ECS and model config
 
 - GIVEN the developer prepares the local environment
-- WHEN they copy `configs/volcengine-ecs-agent.example.yaml` to `configs/volcengine-ecs-agent.yaml`
+- WHEN they use the committed `configs/volcengine-ecs-agent.yaml`
 - THEN the README SHALL document required environment variables for Volcengine ECS MCP and Doubao model access in the same environment preparation section.
 
 ### Requirement: Clean repository workflow
@@ -44,6 +44,7 @@ The repository SHALL keep reproducible source files and specifications while exc
 - GIVEN dependencies or local servers have been run
 - WHEN the project is cleaned
 - THEN `.venv/`, `.uv-cache/`, `.pnpm-store/`, `.langgraph_api/`, `node_modules/`, `.turbo/`, `.next/`, and `__pycache__/` folders SHALL be removable without losing source state.
+- AND `configs/volcengine-ecs-agent.yaml` SHALL remain as source state.
 
 ### Requirement: Local development runtime workflow
 
@@ -57,6 +58,8 @@ The repository SHALL document local development as a paired LangGraph backend an
 - AND run `pnpm dev` from `agent-chat-ui`
 - AND use `http://localhost:3000` as the local chat UI
 - AND use `http://localhost:2024` as the local LangGraph API.
+- AND the README SHALL explain that `langgraph dev` may open remote LangSmith Studio
+- AND the README SHALL explain that LangSmith Studio tracing notices are not local ECS agent errors.
 
 #### Scenario: Use alternate entrypoints
 

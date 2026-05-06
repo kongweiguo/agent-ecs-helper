@@ -44,13 +44,14 @@ The system SHALL keep cloud and model credentials out of committed source files.
 
 ### Requirement: Local config exclusion
 
-The repository SHALL ignore local config and runtime state that may contain account-specific values.
+The repository SHALL commit the default runtime config and ignore only local secret or generated runtime state.
 
 #### Scenario: Ignore local runtime files
 
-- GIVEN the user creates local config or LangGraph runtime state
+- GIVEN the user creates local secret files or LangGraph runtime state
 - WHEN Git status is inspected
-- THEN `configs/volcengine-ecs-agent.yaml`, `.env`, `.venv/`, `.uv-cache/`, `.pnpm-store/`, `.langgraph_api/`, Python cache files, frontend dependency folders, and frontend build caches SHALL be ignored.
+- THEN `.env`, `.venv/`, `.uv-cache/`, `.pnpm-store/`, `.langgraph_api/`, Python cache files, frontend dependency folders, and frontend build caches SHALL be ignored.
+- AND `configs/volcengine-ecs-agent.yaml` SHALL be committed because it contains only non-secret defaults and environment variable names.
 
 ### Requirement: Runtime versions
 

@@ -72,7 +72,6 @@ Ignored local/generated paths include:
 agent-chat-ui/node_modules/
 agent-chat-ui/.turbo/
 agent-chat-ui/apps/web/.next/
-configs/volcengine-ecs-agent.yaml
 .env
 ```
 
@@ -133,12 +132,6 @@ openspec --version
 
 ### 3. 准备本地配置
 
-复制配置模板：
-
-```bash
-cp configs/volcengine-ecs-agent.example.yaml configs/volcengine-ecs-agent.yaml
-```
-
 设置火山 ECS MCP 和豆包模型所需环境变量：
 
 ```bash
@@ -149,7 +142,7 @@ export VOLCENGINE_ENDPOINT="open.volcengineapi.com"
 export ARK_API_KEY="your-doubao-api-key"
 ```
 
-`configs/volcengine-ecs-agent.yaml` 是本地配置，默认不提交。模板文件已包含：
+`configs/volcengine-ecs-agent.yaml` 是已提交的默认运行配置，不包含真实 AK/SK 或 API Key。LangGraph 后端会固定读取这个相对路径，不需要额外配置“配置文件路径”环境变量。配置文件已包含：
 
 - ECS MCP Server：`uvx --from git+https://github.com/volcengine/mcp-server#subdirectory=server/mcp_server_ecs mcp-server-ecs`
 - 豆包模型：火山方舟 OpenAI 兼容接口 `https://ark.cn-beijing.volces.com/api/v3`
@@ -164,7 +157,6 @@ export ARK_API_KEY="your-doubao-api-key"
 在第一个终端运行：
 
 ```bash
-export ECS_AGENT_CONFIG="configs/volcengine-ecs-agent.yaml"
 uv run langgraph dev
 ```
 
@@ -181,6 +173,16 @@ http://localhost:2024/docs
 ```
 
 这个命令会启动本地 LangGraph Agent Server。它会根据 `langgraph.json` 加载 `ecs_agent`，并在本机提供 LangGraph API。`ecs_agent` 的实现入口是 `src/agent_ecs_helper/graph.py:make_graph`，里面会连接豆包模型和 ECS MCP 工具。
+
+`make_graph` 会直接读取 `configs/volcengine-ecs-agent.yaml`。如果要临时使用另一份配置，可以继续走 CLI 的 `--config` 参数；LangGraph 后端入口保持固定默认配置，减少开发时的环境变量。
+
+`uv run langgraph dev` 默认可能会自动打开远程 LangSmith Studio：
+
+```text
+https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024
+```
+
+Studio 里的 `Not seeing LangSmith runs?` 提示不是本地 ECS agent 报错，只表示没有把本地执行数据上传到 LangSmith 云端，所以远程 Studio 看不到 tracing runs。本项目日常开发可以继续使用本地 Agent Chat UI，不需要配置 LangSmith。
 
 ### 2. 启动本地 Agent Chat UI
 
@@ -208,7 +210,7 @@ http://localhost:3000
 
 - Deployment URL: `http://localhost:2024`
 - Assistant / Graph ID: `ecs_agent`
-- LangSmith API Key: 本地开发留空
+- LangSmith API Key: 本地开发留空，不上传本地执行数据
 
 前端只调用本地 LangGraph API，不读取 AK/SK 或豆包 API Key。
 
@@ -285,7 +287,6 @@ uv run langgraph dev --server-log-level warning
 推荐的安静后端启动命令：
 
 ```bash
-export ECS_AGENT_CONFIG="configs/volcengine-ecs-agent.yaml"
 uv run langgraph dev --no-reload --server-log-level warning
 ```
 
@@ -357,7 +358,7 @@ git diff --stat
 确认忽略规则：
 
 ```bash
-git check-ignore -v .venv .uv-cache .langgraph_api agent-chat-ui/node_modules agent-chat-ui/.turbo configs/volcengine-ecs-agent.yaml
+git check-ignore -v .venv .uv-cache .langgraph_api agent-chat-ui/node_modules agent-chat-ui/.turbo .env
 ```
 
 ## Develop With OpenSpec
@@ -399,7 +400,6 @@ cd agent-chat-ui && pnpm turbo build --filter=web && cd ..
 
 ```bash
 # Config
-cp configs/volcengine-ecs-agent.example.yaml configs/volcengine-ecs-agent.yaml
 export VOLCENGINE_ACCESS_KEY="your-volcengine-ak"
 export VOLCENGINE_SECRET_KEY="your-volcengine-sk"
 export VOLCENGINE_REGION="cn-beijing"
@@ -417,7 +417,6 @@ uv run ecs-agent --config configs/volcengine-ecs-agent.yaml "列出 cn-beijing �
 uv run ecs-agent --config configs/volcengine-ecs-agent.yaml
 
 # LangGraph backend
-export ECS_AGENT_CONFIG="configs/volcengine-ecs-agent.yaml"
 uv run langgraph dev
 
 # Local frontend

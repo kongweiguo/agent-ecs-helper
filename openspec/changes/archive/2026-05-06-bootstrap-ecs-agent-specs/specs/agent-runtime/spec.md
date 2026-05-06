@@ -6,6 +6,8 @@
 
 The system SHALL construct an ECS management agent with LangGraph using a Doubao-compatible chat model and ECS MCP tools.
 
+The LangGraph Agent Server graph SHALL load `configs/volcengine-ecs-agent.yaml` directly instead of requiring a config path environment variable.
+
 ### Requirement: ECS MCP tool usage
 
 The agent SHALL manage ECS resources only through configured ECS MCP tools.

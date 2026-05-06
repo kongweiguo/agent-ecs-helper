@@ -12,9 +12,10 @@ The system SHALL construct an ECS management agent with LangGraph using a Doubao
 
 #### Scenario: Build graph for LangGraph Agent Server
 
-- GIVEN `ECS_AGENT_CONFIG` points to a valid YAML config
+- GIVEN `configs/volcengine-ecs-agent.yaml` exists
 - WHEN `langgraph dev` loads `ecs_agent`
 - THEN the system SHALL call `src/agent_ecs_helper/graph.py:make_graph`
+- AND load the default YAML config from `configs/volcengine-ecs-agent.yaml`
 - AND create a LangGraph ReAct agent
 - AND attach tools discovered from the configured ECS MCP server
 - AND use the configured system prompt.
