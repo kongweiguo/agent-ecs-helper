@@ -1,0 +1,6 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "ecs_agent": "./src/agent_ecs_helper/graph.py:make_graph"
+  }
+}

@@ -1,0 +1,11 @@
+.venv/
+.uv-cache/
+.pnpm-store/
+__pycache__/
+*.py[cod]
+.DS_Store
+.langgraph_api/
+
+# Local config may contain account identifiers or secret env names.
+configs/volcengine-ecs-agent.yaml
+.env
